@@ -160,6 +160,7 @@ export default class ConfirmationCodeInput extends Component {
   }
 
   _onKeyPress(e, id) {
+    this.props.onChange()
     if (e.nativeEvent.key === 'Backspace') {
       if (Math.abs(this.lastKeyEventTimestamp - e.timeStamp) < 20) return;
       const { currentIndex } = this.state;
@@ -177,7 +178,6 @@ export default class ConfirmationCodeInput extends Component {
 
   _onInputCode(character, index) {
     const { codeLength, onFulfill, compareWithCode, ignoreCase, onChange } = this.props;
-    this.props.onChange(character)
     let newCodeArr = _.clone(this.state.codeArr);
     newCodeArr[index] = character;
 
