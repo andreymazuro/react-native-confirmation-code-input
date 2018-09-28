@@ -161,6 +161,7 @@ export default class ConfirmationCodeInput extends Component {
 
   _onKeyPress(e, id) {
     if (e.nativeEvent.key === 'Backspace') {
+      if (Math.abs(this.lastKeyEventTimestamp - e.timeStamp) < 20) return;
       const { currentIndex } = this.state;
       if (this.state.codeArr.filter(Number).length === this.props.codeLength) {
         let codeArr = this.state.codeArr
@@ -169,6 +170,8 @@ export default class ConfirmationCodeInput extends Component {
       }
       const nextIndex = currentIndex > 0 ? currentIndex - 1 : 0;
       this._setFocus(nextIndex);
+    } else {
+      this.lastKeyEventTimestamp = e.timeStamp;
     }
   }
 
