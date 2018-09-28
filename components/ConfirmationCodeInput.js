@@ -176,7 +176,8 @@ export default class ConfirmationCodeInput extends Component {
   }
 
   _onInputCode(character, index) {
-    const { codeLength, onFulfill, compareWithCode, ignoreCase } = this.props;
+    const { codeLength, onFulfill, compareWithCode, ignoreCase, onChange } = this.props;
+    this.props.onChange(character)
     let newCodeArr = _.clone(this.state.codeArr);
     newCodeArr[index] = character;
 
@@ -243,7 +244,6 @@ export default class ConfirmationCodeInput extends Component {
           onChangeText={text => this._onInputCode(text, id)}
           onKeyPress={(e) => this._onKeyPress(e, id)}
           maxLength={1}
-          blurOnSubmit={false}
         />
       )
     }
