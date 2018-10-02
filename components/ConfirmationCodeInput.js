@@ -233,11 +233,10 @@ export default class ConfirmationCodeInput extends Component {
         )
       }
       codeInputs.push(
-        <View>
+        <View key={id}>
           {i === 0 && showDivider && <Text style={{ position: 'absolute', top: -20 }}>{leftText}</Text>}
           {i === 2 && showDivider && <Text style={{ position: 'absolute', top: -20 }}>{rightText}</Text>}
         <TextInput
-          key={id}
           ref={ref => (this.codeInputRefs[id] = ref)}
           style={[
             styles.codeInput,
