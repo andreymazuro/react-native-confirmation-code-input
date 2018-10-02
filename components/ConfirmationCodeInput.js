@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { View, TextInput, StyleSheet, Dimensions, ViewPropTypes } from 'react-native';
+import { View, TextInput, StyleSheet, Dimensions, ViewPropTypes, Text } from 'react-native';
 import _ from 'lodash';
 
 // if ViewPropTypes is not defined fall back to View.propType (to support RN < 0.44)
@@ -160,11 +160,11 @@ export default class ConfirmationCodeInput extends Component {
   }
 
   _onKeyPress(e, id) {
-    this.props.onChange()
     if (e.nativeEvent.key === 'Backspace') {
+      this.props.onChange()
       if (Math.abs(this.lastKeyEventTimestamp - e.timeStamp) < 20) return;
       const { currentIndex } = this.state;
-      if (this.state.codeArr.filter(Number).length === this.props.codeLength) {
+      if (this.state.codeArr.filter(i => i !== '').length === this.props.codeLength) {
         let codeArr = this.state.codeArr
         codeArr[id] = ''
         return this.setState({ codeArr })
@@ -172,6 +172,7 @@ export default class ConfirmationCodeInput extends Component {
       const nextIndex = currentIndex > 0 ? currentIndex - 1 : 0;
       this._setFocus(nextIndex);
     } else {
+      this.state.codeArr.filter(i => i !== '').length !== this.props.codeLength && this.props.onChange()
       this.lastKeyEventTimestamp = e.timeStamp;
     }
   }
@@ -186,10 +187,10 @@ export default class ConfirmationCodeInput extends Component {
 
       if (compareWithCode) {
         const isMatching = this._isMatchingCode(code, compareWithCode, ignoreCase);
-        onFulfill(isMatching, code);
+        character !== '' && onFulfill(isMatching, code);
         !isMatching && this.clear();
       } else {
-        onFulfill(code);
+        character !== '' && onFulfill(code);
       }
     } else {
       this._setFocus(this.state.currentIndex + 1);
@@ -212,7 +213,10 @@ export default class ConfirmationCodeInput extends Component {
       autoFocus,
       className,
       size,
-      activeColor
+      activeColor,
+      showDivider,
+      leftText,
+      rightText,
     } = this.props;
 
     const initialCodeInputStyle = {
@@ -223,7 +227,15 @@ export default class ConfirmationCodeInput extends Component {
     let codeInputs = [];
     for (let i = 0; i < codeLength; i++) {
       const id = i;
+      if (showDivider && i === 2) {
+        codeInputs.push(
+          <Text key={'asd'} style={{ fontSize: 30, height: 45, marginRight: 10 }}>/</Text>
+        )
+      }
       codeInputs.push(
+        <View>
+          {i === 0 && showDivider && <Text style={{ position: 'absolute', top: -20 }}>{leftText}</Text>}
+          {i === 2 && showDivider && <Text style={{ position: 'absolute', top: -20 }}>{rightText}</Text>}
         <TextInput
           key={id}
           ref={ref => (this.codeInputRefs[id] = ref)}
@@ -245,6 +257,7 @@ export default class ConfirmationCodeInput extends Component {
           onKeyPress={(e) => this._onKeyPress(e, id)}
           maxLength={1}
         />
+          </View>
       )
     }
 
