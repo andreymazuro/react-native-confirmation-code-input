@@ -255,6 +255,7 @@ export default class ConfirmationCodeInput extends Component {
           onChangeText={text => this._onInputCode(text, id)}
           onKeyPress={(e) => this._onKeyPress(e, id)}
           maxLength={1}
+          blurOnSubmit={false}
         />
           </View>
       )
